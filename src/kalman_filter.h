@@ -2,6 +2,7 @@
 #define KALMAN_FILTER_H_
 
 #include "Eigen/Dense"
+#include "tools.h"
 
 class KalmanFilter {
 public:
@@ -23,6 +24,9 @@ public:
 
     // measurement covariance matrix
     Eigen::MatrixXd R_;
+
+    // Utilities
+    Tools tools;
 
     /**
      * Constructor
@@ -49,7 +53,6 @@ public:
     /**
      * Prediction Predicts the state and the state covariance
      * using the process model
-     * @param delta_T Time between k and k+1 in s
      */
     void Predict();
 
@@ -69,20 +72,26 @@ public:
      * Updates Transition matrix based on elapsed time.
      * @param dt The elapsed time (in seconds) since last measurement.
      */
-     void UpdateFMatrix(float dt, float);
+    void UpdateFMatrix(float dt);
 
-    /** Updates Process covariance matrix based on elapsed time.
+    /**
+     * Updates Process covariance matrix based on elapsed time.
      * @param dt The elapsed time (in seconds) since last measurement.
      * @param noise_ax Acceleration noise variance in x-direction.
      * @param noise_ay Acceleration noise variance in y-direction.
      */
-     void UpdateQMatrix(float dt, float noise_ax, float noise_ay);
+    void UpdateQMatrix(float dt, float noise_ax, float noise_ay);
 
     /**
      * Prints the state vector for debugging purposes
      * @param none
     */
     void PrintStateVector();
+
+    /**
+     * Projects state vector to measurement space
+    */
+    Eigen::VectorXd ProjectToMeasurmentSpace();
 
 };
 
