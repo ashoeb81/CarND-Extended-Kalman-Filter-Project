@@ -37,7 +37,6 @@ MatrixXd Tools::CalculateJacobian(const VectorXd &x_state) {
 
     //check division by zero
     if (fabs(c1) < 0.0001) {
-        std::cout << "Small Norm!!!" << std::endl;
         return Hj.setZero();
     }
 
