@@ -47,7 +47,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     VectorXd zpred = ProjectToMeasurmentSpace();
     VectorXd y = z - zpred;
     std::cout << "Y: " << y(1) << std::endl;
-    H_ = tools.CalculateJacobian(x_);
     MatrixXd Ht = H_.transpose();
     MatrixXd S = H_ * P_ * Ht + R_;
     MatrixXd Si = S.inverse();
