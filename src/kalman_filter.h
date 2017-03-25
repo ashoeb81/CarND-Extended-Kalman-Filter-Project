@@ -7,25 +7,25 @@
 class KalmanFilter {
 public:
 
-    // state vector
+    // State vector.
     Eigen::VectorXd x_;
 
-    // state covariance matrix
+    // State covariance matrix.
     Eigen::MatrixXd P_;
 
-    // state transistion matrix
+    // State transition matrix.
     Eigen::MatrixXd F_;
 
-    // process covariance matrix
+    // Process covariance matrix.
     Eigen::MatrixXd Q_;
 
-    // measurement matrix
+    // Measurement matrix.
     Eigen::MatrixXd H_;
 
-    // measurement covariance matrix
+    // Measurement covariance matrix.
     Eigen::MatrixXd R_;
 
-    // Utilities
+    // Utilities for computing Jacobian and RMSE.
     Tools tools;
 
     /**
@@ -37,18 +37,6 @@ public:
      * Destructor
      */
     virtual ~KalmanFilter();
-
-    /**
-     * Init Initializes Kalman filter
-     * @param x_in Initial state
-     * @param P_in Initial state covariance
-     * @param F_in Transition matrix
-     * @param H_in Measurement matrix
-     * @param R_in Measurement covariance matrix
-     * @param Q_in Process covariance matrix
-     */
-    void Init(Eigen::VectorXd &x_in, Eigen::MatrixXd &P_in, Eigen::MatrixXd &F_in,
-              Eigen::MatrixXd &H_in, Eigen::MatrixXd &R_in, Eigen::MatrixXd &Q_in);
 
     /**
      * Prediction Predicts the state and the state covariance
@@ -69,13 +57,13 @@ public:
     void UpdateEKF(const Eigen::VectorXd &z);
 
     /**
-     * Updates Transition matrix based on elapsed time.
+     * Updates Transition matrix based on elapsed time since last measurement.
      * @param dt The elapsed time (in seconds) since last measurement.
      */
     void UpdateFMatrix(float dt);
 
     /**
-     * Updates Process covariance matrix based on elapsed time.
+     * Updates Process covariance matrix based on elapsed time since last measurement.
      * @param dt The elapsed time (in seconds) since last measurement.
      * @param noise_ax Acceleration noise variance in x-direction.
      * @param noise_ay Acceleration noise variance in y-direction.
@@ -83,15 +71,9 @@ public:
     void UpdateQMatrix(float dt, float noise_ax, float noise_ay);
 
     /**
-     * Prints the state vector for debugging purposes
-     * @param none
-    */
-    void PrintStateVector();
-
-    /**
      * Projects state vector to measurement space
     */
-    Eigen::VectorXd ProjectToMeasurmentSpace();
+    Eigen::VectorXd ProjectToMeasurementSpace();
 
 };
 

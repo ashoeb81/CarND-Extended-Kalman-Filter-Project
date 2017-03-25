@@ -11,16 +11,6 @@ KalmanFilter::KalmanFilter() {}
 
 KalmanFilter::~KalmanFilter() {}
 
-void KalmanFilter::Init(VectorXd &x_in, MatrixXd &P_in, MatrixXd &F_in,
-                        MatrixXd &H_in, MatrixXd &R_in, MatrixXd &Q_in) {
-    x_ = x_in;
-    P_ = P_in;
-    F_ = F_in;
-    H_ = H_in;
-    R_ = R_in;
-    Q_ = Q_in;
-}
-
 void KalmanFilter::Predict() {
     x_ = F_ * x_;
     MatrixXd Ft = F_.transpose();
@@ -28,6 +18,7 @@ void KalmanFilter::Predict() {
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
+    // Standard kalman filter update equations.
     VectorXd z_pred = H_ * x_;
     VectorXd y = z - z_pred;
     MatrixXd Ht = H_.transpose();
@@ -44,10 +35,10 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-    VectorXd zpred = ProjectToMeasurmentSpace();
+    // Project filter state into radar measurement space.
+    VectorXd zpred = ProjectToMeasurementSpace();
     VectorXd y = z - zpred;
-    std::cout << "Y: " << y(1) << std::endl;
-    MatrixXd Ht = H_.transpose();
+    MatrixXd Ht = H_.transpose();  // Note: H_ has already been linearized.
     MatrixXd S = H_ * P_ * Ht + R_;
     MatrixXd Si = S.inverse();
     MatrixXd PHt = P_ * Ht;
