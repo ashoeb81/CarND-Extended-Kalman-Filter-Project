@@ -47,14 +47,10 @@ public:
     /**
      * Updates the state by using standard Kalman Filter equations
      * @param z The measurement at k+1
+     * @param z_pred The measurement prediction at k+1
      */
-    void Update(const Eigen::VectorXd &z);
+    void Update(const Eigen::VectorXd &z, const Eigen::VectorXd &z_pred);
 
-    /**
-     * Updates the state by using Extended Kalman Filter equations
-     * @param z The measurement at k+1
-     */
-    void UpdateEKF(const Eigen::VectorXd &z);
 
     /**
      * Updates Transition matrix based on elapsed time since last measurement.
@@ -70,10 +66,18 @@ public:
      */
     void UpdateQMatrix(float dt, float noise_ax, float noise_ay);
 
+
     /**
-     * Projects state vector to measurement space
+    * Projects state vector to radar measurement space
+    * @param result Pointer to an Eigen::VectorXd that will populated with result.
     */
-    Eigen::VectorXd ProjectToMeasurementSpace();
+    void ProjectToRadarMeasurementSpace(Eigen::VectorXd *result);
+
+    /**
+    * Projects state vector to laser measurement space
+    * @param result Pointer to an Eigen::VectorXd that will populated with result.
+    */
+    void ProjectToLaserMeasurementSpace(Eigen::VectorXd *result);
 
 };
 

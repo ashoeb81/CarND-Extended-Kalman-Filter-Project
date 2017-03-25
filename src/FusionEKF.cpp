@@ -111,7 +111,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     /*****************************************************************************
     *  Update
     ****************************************************************************/
-
+    // Vector to hold measurement prediction
+    VectorXd z_pred(3);
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
         // Assign appropriate measurement covariance matrix for radar.
         ekf_.R_ = R_radar_;
@@ -119,16 +120,20 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
         ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
         // If we succeeded in computing H_, then update kalman filter state otherwise skip.
         if (!ekf_.H_.isZero()) {
-            VectorXd z_pred = ekf_.ProjectStateToRadarSpace();
-            ekf_.UpdateEKF(z_pred);
+            // Project filter state to radar measurement state.
+            ekf_.ProjectToRadarMeasurementSpace(&z_pred);
+            // Update filter state based on measurement.
+            ekf_.Update(measurement_pack.raw_measurements_, z_pred);
         }
     } else {
         // Assign appropriate measurement matrix for laser.
         ekf_.H_ = H_laser_;
         // Assign appropriate measurement covariance matrix for laser.
         ekf_.R_ = R_laser_;
+        // Project filter state to laser measurement state
+        ekf_.ProjectToLaserMeasurementSpace(&z_pred);
         // Update state based on measurement.
-        ekf_.Update(measurement_pack.raw_measurements_);
+        ekf_.Update(measurement_pack.raw_measurements_, z_pred);
     }
 
     // print the output
