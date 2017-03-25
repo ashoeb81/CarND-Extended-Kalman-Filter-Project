@@ -34,9 +34,6 @@ FusionEKF::FusionEKF() {
     H_laser_ << 1, 0, 0, 0,
             0, 1, 0, 0;
 
-    // Instantiate Radar state to measurement matrix.
-    Hj_ = MatrixXd(3, 4);
-
     // Instantiate kalman filter state vector.
     ekf_.x_ = VectorXd(4);
 

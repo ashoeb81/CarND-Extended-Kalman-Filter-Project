@@ -47,7 +47,6 @@ private:
 
     // Measurement matrices.
     Eigen::MatrixXd H_laser_;
-    Eigen::MatrixXd Hj_;
 
     // State noise variables.
     float noise_ax;
