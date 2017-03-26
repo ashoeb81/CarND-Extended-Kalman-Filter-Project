@@ -21,9 +21,9 @@ void KalmanFilter::Update(const VectorXd &z, const VectorXd &z_pred) {
     // Standard kalman filter update equations.
     VectorXd y = z - z_pred;
     MatrixXd Ht = H_.transpose();
-    MatrixXd S = H_ * P_ * Ht + R_;
-    MatrixXd Si = S.inverse();
     MatrixXd PHt = P_ * Ht;
+    MatrixXd S = H_ * PHt + R_;
+    MatrixXd Si = S.inverse();
     MatrixXd K = PHt * Si;
 
     //new estimate
@@ -63,9 +63,15 @@ void KalmanFilter::ProjectToRadarMeasurementSpace(VectorXd *result) {
     float vy = x_(3);
     float norm = sqrt(pow(px, 2) + pow(py, 2));
 
-    (*result)(0) = norm;
-    (*result)(1) = atan2(py, px);
-    (*result)(2) = (px * vx + py * vy) / norm;
+    // Make sure norm is not small to avoid numerical error in division.
+    if (norm < 0.0001) {
+        (*result).setZero();
+    } else {
+        (*result)(0) = norm;
+        (*result)(1) = atan2(py, px);
+        (*result)(2) = (px * vx + py * vy) / norm;
+    }
+
 }
 
 
